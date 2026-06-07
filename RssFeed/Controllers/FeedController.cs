@@ -72,9 +72,18 @@ namespace RssFeed.Controllers
         public async Task<IActionResult> GetPost(int id)
         {
             var post = await Context.RSS.FindAsync(id);
-            if (post == null)
-                return NotFound();
-            return Ok(post);
+            if (post == null) return NotFound();
+
+            XDocument xml = new(new XElement("post",
+                    new XElement("id", post.Id),
+                    new XElement("title", post.Title),
+                    new XElement("summary", post.Summary),
+                    new XElement("content", post.Content),
+                    new XElement("publishedAt", post.PublishedAt.ToString("R"))
+                )
+            );
+
+            return Content(xml.ToString(), "application/xml", Encoding.UTF8);
         }
 
         /// <summary>
