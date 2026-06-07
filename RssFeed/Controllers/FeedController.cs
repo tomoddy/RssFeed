@@ -53,7 +53,7 @@ namespace RssFeed.Controllers
                                 new XElement("description", p.Summary),
                                 new XElement(XName.Get("encoded", "http://purl.org/rss/1.0/modules/content/"), p.Content),
                                 new XElement("pubDate", p.PublishedAt.ToString("R")),
-                                new XElement("guid", $"{baseUrl}/{p.Id}")
+                                new XElement("guid", $"{baseUrl}/{p.Id}", new XAttribute("isPermaLink", "false"), p.Id.ToString())
                             )
                         )
                     )
@@ -61,29 +61,6 @@ namespace RssFeed.Controllers
             );
 
             return Content(feed.ToString(), "application/rss+xml", Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// Get a single post by ID
-        /// </summary>
-        /// <param name="id">The ID of the post to retrieve</param>
-        /// <returns>The post if found, otherwise NotFound</returns>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPost(int id)
-        {
-            var post = await Context.RSS.FindAsync(id);
-            if (post == null) return NotFound();
-
-            XDocument xml = new(new XElement("post",
-                    new XElement("id", post.Id),
-                    new XElement("title", post.Title),
-                    new XElement("summary", post.Summary),
-                    new XElement("content", post.Content),
-                    new XElement("publishedAt", post.PublishedAt.ToString("R"))
-                )
-            );
-
-            return Content(xml.ToString(), "application/xml", Encoding.UTF8);
         }
 
         /// <summary>
