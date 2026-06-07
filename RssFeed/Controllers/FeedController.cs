@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Xml.Linq;
 
@@ -60,6 +61,20 @@ namespace RssFeed.Controllers
             );
 
             return Content(feed.ToString(), "application/rss+xml", Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Get a single post by ID
+        /// </summary>
+        /// <param name="id">The ID of the post to retrieve</param>
+        /// <returns>The post if found, otherwise NotFound</returns>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPost(int id)
+        {
+            var post = await Context.RSS.FindAsync(id);
+            if (post == null)
+                return NotFound();
+            return Ok(post);
         }
 
         /// <summary>
