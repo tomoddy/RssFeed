@@ -10,4 +10,5 @@ WebApplication app = builder.Build();
 app.MapOpenApi();
 app.UseHttpsRedirection();
 app.MapControllers();
+app.UseStaticFiles();
 app.Run();
